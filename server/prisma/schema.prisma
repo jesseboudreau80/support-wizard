@@ -15,6 +15,7 @@ model Org {
   users       User[]
   tickets     Ticket[]
   roles       RoleAssignment[]
+  documents   KnowledgeBaseDocument[]
 }
 
 model User {
@@ -30,6 +31,7 @@ model User {
   tickets     Ticket[] @relation("TicketCreator")
   messages    Message[]
   roles       RoleAssignment[]
+  routingReviews RoutingFeedback[]
 }
 
 enum AuthProvider {
