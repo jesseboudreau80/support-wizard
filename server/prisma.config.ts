@@ -1,22 +1,5 @@
-import dotenv from 'dotenv';
+import { defineConfig } from "prisma/config";
 
-dotenv.config();
-
-export const prismaConfig = {
-  schema: './prisma/schema.prisma',
-  datasources: {
-    db: {
-      provider: 'postgresql',
-      url: process.env.DATABASE_URL || '',
-    },
-  },
-  generators: {
-    client: {
-      provider: 'prisma-client-js',
-    },
-  },
-};
-
-export const databaseUrl = prismaConfig.datasources.db.url;
-
-export default prismaConfig;
+export default defineConfig({
+  schema: "./prisma/schema.prisma",
+});
