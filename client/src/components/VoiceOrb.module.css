@@ -313,3 +313,22 @@
     transform: none !important;
   }
 }
+
+@keyframes success-bounce {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.08);
+  }
+  70% {
+    transform: scale(0.97);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.successBounce {
+  animation: success-bounce 600ms ease-out;
+}

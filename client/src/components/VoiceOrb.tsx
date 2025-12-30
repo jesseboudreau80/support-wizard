@@ -1,7 +1,8 @@
-import type { PropsWithChildren } from 'react';
-import styles from './VoiceOrb.module.css';
+import type { PropsWithChildren } from "react";
+import styles from "./VoiceOrb.module.css";
+import { FrenchieFace } from "./FrenchieFace";
 
-type VoiceOrbStatus = 'idle' | 'listening' | 'processing' | 'success' | 'error';
+type VoiceOrbStatus = "idle" | "listening" | "processing" | "success" | "error";
 
 interface VoiceOrbProps extends PropsWithChildren {
   status: VoiceOrbStatus;
@@ -13,19 +14,19 @@ interface VoiceOrbProps extends PropsWithChildren {
 }
 
 const statusLabel: Record<VoiceOrbStatus, string> = {
-  idle: 'Ready to listen',
-  listening: 'Listening…',
-  processing: 'Processing…',
-  success: 'Captured',
-  error: 'Try again',
+  idle: "Ready to listen",
+  listening: "Listening…",
+  processing: "Processing…",
+  success: "Captured",
+  error: "Try again",
 };
 
 const actionHint: Record<VoiceOrbStatus, string> = {
-  idle: 'Tap to start',
-  listening: 'Tap to stop',
-  processing: 'Tap to cancel',
-  success: 'Tap to start another',
-  error: 'Tap to retry',
+  idle: "Tap to start",
+  listening: "Tap to stop",
+  processing: "Tap to cancel",
+  success: "Tap to start another",
+  error: "Tap to retry",
 };
 
 export function VoiceOrb({
@@ -37,11 +38,11 @@ export function VoiceOrb({
   className,
 }: VoiceOrbProps) {
   const handlePress = () => {
-    if (status === 'idle' || status === 'success' || status === 'error') {
+    if (status === "idle" || status === "success" || status === "error") {
       onStart?.();
-    } else if (status === 'listening') {
+    } else if (status === "listening") {
       onStop?.();
-    } else if (status === 'processing') {
+    } else if (status === "processing") {
       onCancel?.();
     }
   };
@@ -49,20 +50,37 @@ export function VoiceOrb({
   const ariaLabel = label ?? `${statusLabel[status]} — ${actionHint[status]}`;
 
   return (
-    <div className={`${styles.wrapper} ${className ?? ''}`}>
+    <div className={`${styles.wrapper} ${className ?? ""}`}>
       <button
         type="button"
-        className={`${styles.orbButton} ${styles[status]}`}
+        className={`${styles.orbButton} ${styles[status]} ${
+          status === "success" ? styles.successBounce : ""
+        }`}
         onClick={handlePress}
         aria-label={ariaLabel}
         aria-live="polite"
       >
+        {/* Orb visual layers */}
         <span className={styles.ring} aria-hidden />
         <span className={styles.core} aria-hidden />
-        {status === 'processing' && <span className={styles.spinner} aria-hidden />}
-        {status === 'success' && <span className={styles.flash} aria-hidden />}
-        {status === 'error' && <span className={styles.errorGlow} aria-hidden />}
-        {status === 'listening' && (
+
+        {/* Processing spinner */}
+        {status === "processing" && (
+          <span className={styles.spinner} aria-hidden />
+        )}
+
+        {/* Success flash */}
+        {status === "success" && (
+          <span className={styles.flash} aria-hidden />
+        )}
+
+        {/* Error glow */}
+        {status === "error" && (
+          <span className={styles.errorGlow} aria-hidden />
+        )}
+
+        {/* Listening waveform */}
+        {status === "listening" && (
           <span className={styles.waveform} aria-hidden>
             <span className={styles.bar} />
             <span className={styles.bar} />
@@ -70,22 +88,15 @@ export function VoiceOrb({
             <span className={styles.bar} />
           </span>
         )}
+
+        {/* 🐶 Frenchie success overlay */}
+        <FrenchieFace visible={status === "success"} />
       </button>
 
       <div className={styles.caption} aria-live="polite">
         <div className={styles.statusLabel}>{statusLabel[status]}</div>
         <div className={styles.hint}>{actionHint[status]}</div>
       </div>
-
-      {/*
-        Example usage:
-        <VoiceOrb
-          status="idle"
-          onStart={() => console.log('start listening')}
-          onStop={() => console.log('stop listening')}
-          onCancel={() => console.log('cancel processing')}
-        />
-      */}
     </div>
   );
 }
